@@ -1,0 +1,2 @@
+# Django customer management platform
+
