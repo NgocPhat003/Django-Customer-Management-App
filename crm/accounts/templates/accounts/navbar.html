@@ -1,6 +1,6 @@
 {% load static %}
 <style>
-  .hello.msg{
+  .hello-msg{
     font-size: 18px;
     color: #fff;
     margin-right: 20px;
@@ -15,17 +15,18 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      {% if request.user.is_staff%}
       <li class="nav-item active">
         <a href="{% url 'home' %}" class="nav-link">Dashboard</a>
       </li>
       <li class="nav-item">
         <a href="{% url 'products' %}" class="nav-link">Products</a>
       </li>
-      
+      {% endif %}
     </ul>
   </div>
 
-  <span id="hello-msg">Hello, {{request.user}}</span>
+  <span class="hello-msg">Hello, {{request.user}}</span>
   <span><a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Logout</a></span>
 
 </nav>
