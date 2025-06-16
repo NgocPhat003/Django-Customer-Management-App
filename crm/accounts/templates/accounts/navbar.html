@@ -22,6 +22,10 @@
       <li class="nav-item">
         <a href="{% url 'products' %}" class="nav-link">Products</a>
       </li>
+      {% else %}
+      <li class="nav-item">
+        <a href="{% url 'account' %}" class="nav-link">Settings</a>
+      </li>
       {% endif %}
     </ul>
   </div>

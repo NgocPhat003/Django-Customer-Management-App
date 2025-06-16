@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group
 
 # Create your views here.
 from .models import *
-from .forms import OrderForm, CreateUserForm
+from .forms import OrderForm, CreateUserForm, CustomerForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_user, admin_only
 
@@ -26,11 +26,14 @@ def registerPage(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
+            userEmail = form.cleaned_data.get('email')
 
             group = Group.objects.get(name='customer')
             user.groups.add(group)
             Customer.objects.create(
-                user=user
+                user=user,
+                name=username,
+                email=userEmail
             )
 
             messages.success(request, 'Account was created successfully for ' + username)
@@ -80,6 +83,7 @@ def home(request):
 
     return render(request, 'accounts/dashboard.html', context)
 
+# User's pages
 @login_required(login_url='login')
 @allowed_user(allowed_roles=['customer'])
 def userPage(request):
@@ -93,6 +97,21 @@ def userPage(request):
 
     return render(request, 'accounts/user.html', context)
 
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['customer'])
+def accountSetting(request):
+    customer = request.user.customer
+    form = CustomerForm(instance=customer)
+
+    if request.method == 'POST':
+        form=CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+
+    context =  {'form': form}
+    return render(request, 'accounts/account_setting.html', context)
+
+# Admin's pages
 @login_required(login_url='login')
 @allowed_user(allowed_roles=['admin'])
 def products(request):
